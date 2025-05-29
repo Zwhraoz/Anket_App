@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var authVM = AuthViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if authVM.isLoggedIn {
+                MainTabView()
+                    .environmentObject(authVM)
+            } else {
+                LoginView()
+                    .environmentObject(authVM)
+            }
         }
-        .padding()
     }
 }
 
-#Preview {
-    ContentView()
-}
