@@ -4,14 +4,16 @@ import AVFoundation
 struct AudioAnswerView: View {
     var question: Question
     @EnvironmentObject var viewModel: SurveyDetailViewModel
-
+    
     @State private var isRecording = false
     @State private var isPlaying = false
     @State private var audioURL: URL?
-
+    
     @State private var audioRecorder: AVAudioRecorder?
     @State private var audioPlayer: AVAudioPlayer?
-
+    
+    @State private var recordedFileName: String? = nil // Dosya adı saklanacak
+    
     var body: some View {
         VStack(spacing: 15) {
             Button(action: {
@@ -28,7 +30,7 @@ struct AudioAnswerView: View {
                 }
             }
             .disabled(isPlaying)
-
+            
             if audioURL != nil {
                 Button(action: {
                     if isPlaying {
@@ -45,7 +47,7 @@ struct AudioAnswerView: View {
                 }
                 .disabled(isRecording)
             }
-
+            
             if let url = audioURL {
                 Text("Kayıt tamamlandı: \(url.lastPathComponent)")
                     .font(.caption)
@@ -58,7 +60,7 @@ struct AudioAnswerView: View {
             if isPlaying { stopPlaying() }
         }
     }
-
+    
     func requestMicrophonePermissionAndStart() {
         switch AVAudioSession.sharedInstance().recordPermission {
         case .granted:
@@ -79,44 +81,56 @@ struct AudioAnswerView: View {
             print("Bilinmeyen mikrofon izni durumu.")
         }
     }
-
+    
     func startRecording() {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
             try audioSession.setActive(true)
-
+            
             let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let filename = UUID().uuidString + ".m4a"
-            let fileURL = documents.appendingPathComponent(filename)
-
+            let filename = UUID().uuidString
+            let fileURL = documents.appendingPathComponent(filename + ".m4a")
+            
+            recordedFileName = filename
+            
             let settings: [String: Any] = [
                 AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
                 AVSampleRateKey: 12000,
                 AVNumberOfChannelsKey: 1,
                 AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
             ]
-
+            
             audioRecorder = try AVAudioRecorder(url: fileURL, settings: settings)
             audioRecorder?.record()
-
+            
             isRecording = true
             audioURL = nil
         } catch {
             print("Kayıt başlatılamadı: \(error.localizedDescription)")
         }
     }
-
+    
     func stopRecording() {
         audioRecorder?.stop()
-        if let url = audioRecorder?.url {
+        if let url = audioRecorder?.url, let fileName = recordedFileName {
             audioURL = url
-            viewModel.saveAudioAnswer(for: question.id, audioURL: url.absoluteString)
+            
+            do {
+                let audioData = try Data(contentsOf: url)
+                let base64String = audioData.base64EncodedString()
+                
+                // PHP'ye base64 ve dosya adını gönder
+                if let fileName = recordedFileName {
+                    viewModel.saveAudioAnswer(for: question.id, base64Audio: base64String, fileName: fileName)
+                }            } catch {
+                print("Ses dosyası okunamadı: \(error.localizedDescription)")
+            }
         }
         isRecording = false
         audioRecorder = nil
     }
-
+    
     func startPlaying() {
         guard let url = audioURL else { return }
         do {
@@ -132,22 +146,22 @@ struct AudioAnswerView: View {
             print("Oynatma başlatılamadı: \(error.localizedDescription)")
         }
     }
-
+    
     func stopPlaying() {
         audioPlayer?.stop()
         isPlaying = false
         audioPlayer = nil
     }
-}
-
-class AudioPlayerDelegate: NSObject, AVAudioPlayerDelegate {
-    var onFinish: (Bool) -> Void
-
-    init(onFinish: @escaping (Bool) -> Void) {
-        self.onFinish = onFinish
-    }
-
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        onFinish(flag)
+    
+    class AudioPlayerDelegate: NSObject, AVAudioPlayerDelegate {
+        var onFinish: (Bool) -> Void
+        
+        init(onFinish: @escaping (Bool) -> Void) {
+            self.onFinish = onFinish
+        }
+        
+        func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+            onFinish(flag)
+        }
     }
 }

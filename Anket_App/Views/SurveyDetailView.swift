@@ -64,6 +64,8 @@ var body: some View {
             
             Button(action: {
                 viewModel.submitSurvey()
+                print("submitSurvey tetiklendi")
+
             }) {
                 Text("Anketi Gönder")
                     .bold()

@@ -34,11 +34,15 @@ struct RegisterView: View {
         let user = User(mail: email, password: password)
         
         // AuthService ile kayıt işlemi
-        AuthService.shared.register(user: user) { success, message in
+        AuthService.shared.register(user: user) { success, message, userId in
             DispatchQueue.main.async {
                 if success {
                     alertMessage = "Kayıt başarıyla oluştu!"
                     showAlert = true
+                    if let id = userId {
+                        UserDefaults.standard.set(id, forKey: "userId")
+                        print("Kayıt sonrası userId kaydedildi: \(id)")
+                    }
                     // Başarılı alertten sonra login sayfasına yönlendirme
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         navigateToLogin = true

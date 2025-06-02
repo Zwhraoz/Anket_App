@@ -159,14 +159,12 @@ struct SettingsView: View {
     }
     
     private func signOut() {
-        // Kullanıcı bilgilerini sıfırla
         userName = "Kullanıcı Adı"
         userEmail = "kullanici@example.com"
         appLanguage = "Türkçe"
         isDarkMode = false
         
-        // Giriş durumunu false yaparak login ekranına dön
-        isLoggedIn = false
+        authVM.isLoggedIn = false
     }
 }
 

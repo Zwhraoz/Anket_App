@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct User: Codable {
+struct User: Codable, CustomStringConvertible {
     let mail: String
     let password: String
+    
+    var description: String {
+        return "User(mail: \(mail), password: ***)"
+    }
 }

@@ -1,44 +1,76 @@
 import Foundation
 
 // Data modelleri
+
 struct Survey: Identifiable, Codable {
-    var id = UUID()
-    var title: String
-    var description: String
-    var questions: [Question]
+    let id: UUID
+    let title: String
+    let description: String
+    let questions: [Question]
+    
+    // Eğer id dışarıdan verilmezse otomatik UUID atanabilir
+    init(id: UUID = UUID(), title: String, description: String, questions: [Question]) {
+        self.id = id
+        self.title = title
+        self.description = description
+        self.questions = questions
+    }
 }
 
 struct Question: Identifiable, Codable {
-    var id = UUID()
-    var questionText: String
-    var answerType: AnswerType
-    var options: [String]?
+    let id: UUID
+    let questionText: String
+    let answerType: AnswerType
+    let options: [String]?
+    
+    init(id: UUID = UUID(), questionText: String, answerType: AnswerType, options: [String]? = nil) {
+        self.id = id
+        self.questionText = questionText
+        self.answerType = answerType
+        self.options = options
+    }
+    
+    enum AnswerType: String, Codable {
+        case multipleChoice
+        case text
+        case audio
+    }
 }
 
-enum AnswerType: String, Codable {
-    case multipleChoice
-    case text
-    case audio
-}
+struct AnswerPayload: Codable {
+    let questionId: String
+    var answerText: String?
+    var audioUrl: String?
 
-struct Answer: Codable {
-    var questionId: UUID
+    enum CodingKeys: String, CodingKey {
+        case questionId = "question_id"
+        case answerText = "answer_text"
+        case audioUrl = "audio_url"
+    }
+}
+// Yeni: Answer struct tanımı
+struct Answer {
+    let questionId: UUID
     var answerText: String?
     var audioURL: String?
 }
 
 struct SurveySubmission: Codable {
-    let user_id: Int
-    let survey_title: String
-    let survey_description: String?
-    let answers: [AnswerPayload]
+    var userId: Int
+    var surveyTitle: String
+    var surveyDescription: String?  // <-- opsiyonel olmalı
+    var answers: [AnswerPayload]
+
+
+
+    enum CodingKeys: String, CodingKey {
+        case userId = "userId"
+        case surveyTitle = "surveyTitle"
+        case surveyDescription = "surveyDescription"
+        case answers = "answers"
+    }
 }
 
-struct AnswerPayload: Codable {
-    let question_id: String
-    let answer_text: String?
-    let audio_url: String?
-}
 
 // Gönderme fonksiyonu
 func sendSurveyAnswers(userId: Int, survey: Survey, answers: [Answer]) {
@@ -50,17 +82,17 @@ func sendSurveyAnswers(userId: Int, survey: Survey, answers: [Answer]) {
         }
 
         let payload = AnswerPayload(
-            question_id: question.id.uuidString,
-            answer_text: answer.answerText,
-            audio_url: answer.audioURL
+            questionId: question.id.uuidString,
+            answerText: answer.answerText,
+            audioUrl: answer.audioURL
         )
         answerPayloads.append(payload)
     }
 
     let surveyPayload = SurveySubmission(
-        user_id: userId,
-        survey_title: survey.title,
-        survey_description: survey.description,
+        userId: userId,
+        surveyTitle: survey.title,
+        surveyDescription: survey.description,
         answers: answerPayloads
     )
 
@@ -68,7 +100,7 @@ func sendSurveyAnswers(userId: Int, survey: Survey, answers: [Answer]) {
 }
 
 func sendSurveyAnswerToServer(payload: SurveySubmission) {
-    guard let url = URL(string: "https://mobilprogramlama.ardglobal.com.tr/Anket_Uygulamasi/save_survey_response.php") else {
+    guard let url = URL(string: "https://mobilprogramlama.ardglobal.com.tr/Foto_ses_kaydi_imza_swift/save_survey_response.php") else {
         print("Geçersiz URL")
         return
     }

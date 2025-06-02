@@ -19,24 +19,24 @@ struct SurveyView: View {
 
             Button("Anketi Gönder") {
                 let exampleSurvey = SurveySubmission(
-                    user_id: 1,
-                    survey_title: "Günlük Alışkanlıklar Anketi",
-                    survey_description: "Kullanıcıların günlük alışkanlıklarını analiz etmek için",
+                    userId: 1,
+                    surveyTitle: "Günlük Alışkanlıklar Anketi",
+                    surveyDescription: "Kullanıcıların günlük alışkanlıklarını analiz etmek için",
                     answers: [
                         AnswerPayload(
-                            question_id: UUID().uuidString,
-                            answer_text: "7",
-                            audio_url: nil
+                            questionId: UUID().uuidString,
+                            answerText: "7",
+                            audioUrl: nil
                         ),
                         AnswerPayload(
-                            question_id: UUID().uuidString,
-                            answer_text: "Çay",
-                            audio_url: nil
+                            questionId: UUID().uuidString,
+                            answerText: "Çay",
+                            audioUrl: nil
                         ),
                         AnswerPayload(
-                            question_id: UUID().uuidString,
-                            answer_text: nil,
-                            audio_url: "https://sunucum.com/audios/sesdosyasi1.m4a"
+                            questionId: UUID().uuidString,
+                            answerText: nil,
+                            audioUrl: "https://sunucum.com/audios/sesdosyasi1.m4a"
                         )
                     ]
                 )

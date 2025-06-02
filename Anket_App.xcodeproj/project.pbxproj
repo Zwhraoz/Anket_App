@@ -23,13 +23,11 @@
 		6661A90D2DDA09120008C960 /* SignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6661A90C2DDA09120008C960 /* SignatureView.swift */; };
 		6661A90F2DDA0ACD0008C960 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6661A90E2DDA0ACD0008C960 /* RegisterView.swift */; };
 		6661A9122DDA113F0008C960 /* AudioRecorderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6661A9112DDA113F0008C960 /* AudioRecorderViewModel.swift */; };
-		6661A9162DDA11A90008C960 /* AVAudioRecorder'ın.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6661A9152DDA11A90008C960 /* AVAudioRecorder'ın.swift */; };
 		6661A91A2DDA146D0008C960 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6661A9192DDA146D0008C960 /* ProfileView.swift */; };
 		6661A9262DDA46B50008C960 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6661A9252DDA46B50008C960 /* SettingsView.swift */; };
 		6661A9282DDA46EB0008C960 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6661A9272DDA46EB0008C960 /* MainTabView.swift */; };
 		666AFE462DE816900027F613 /* SurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666AFE452DE8168D0027F613 /* SurveyView.swift */; };
 		6684535F2DE82AD900AB51B4 /* SurveyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6684535E2DE82AD900AB51B4 /* SurveyViewModel.swift */; };
-		6691A2C52DE0382A0077A00A /* SurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691A2C42DE038260077A00A /* SurveyAnswer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,13 +49,11 @@
 		6661A90E2DDA0ACD0008C960 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		6661A9102DDA0F180008C960 /* Anket-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Anket-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		6661A9112DDA113F0008C960 /* AudioRecorderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderViewModel.swift; sourceTree = "<group>"; };
-		6661A9152DDA11A90008C960 /* AVAudioRecorder'ın.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVAudioRecorder'ın.swift"; sourceTree = "<group>"; };
 		6661A9192DDA146D0008C960 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		6661A9252DDA46B50008C960 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		6661A9272DDA46EB0008C960 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		666AFE452DE8168D0027F613 /* SurveyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyView.swift; sourceTree = "<group>"; };
 		6684535E2DE82AD900AB51B4 /* SurveyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewModel.swift; sourceTree = "<group>"; };
-		6691A2C42DE038260077A00A /* SurveyAnswer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyAnswer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,9 +147,7 @@
 		6661A8F92DDA00B40008C960 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				6691A2C42DE038260077A00A /* SurveyAnswer.swift */,
 				6661A8FC2DDA00E30008C960 /* AuthService.swift */,
-				6661A9152DDA11A90008C960 /* AVAudioRecorder'ın.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -239,12 +233,10 @@
 				6661A9052DDA01910008C960 /* SurveyListViewModel.swift in Sources */,
 				6661A9032DDA017D0008C960 /* Survey.swift in Sources */,
 				6661A9072DDA01B90008C960 /* SurveyListView.swift in Sources */,
-				6661A9162DDA11A90008C960 /* AVAudioRecorder'ın.swift in Sources */,
 				6661A90D2DDA09120008C960 /* SignatureView.swift in Sources */,
 				6661A9282DDA46EB0008C960 /* MainTabView.swift in Sources */,
 				6661A91A2DDA146D0008C960 /* ProfileView.swift in Sources */,
 				6661A8E92DD9FBB00008C960 /* ContentView.swift in Sources */,
-				6691A2C52DE0382A0077A00A /* SurveyAnswer.swift in Sources */,
 				6661A8E72DD9FBB00008C960 /* Anket_AppApp.swift in Sources */,
 				6661A9122DDA113F0008C960 /* AudioRecorderViewModel.swift in Sources */,
 				6661A8FB2DDA00CD0008C960 /* User.swift in Sources */,

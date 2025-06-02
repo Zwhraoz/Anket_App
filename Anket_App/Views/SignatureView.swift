@@ -18,7 +18,7 @@ struct SignatureView: View {
                     var previousPoint: CGPoint? = nil
                     for point in points {
                         if point == .zero {
-                            previousPoint = nil // yeni çizgi başlat
+                            previousPoint = nil // öncekinden devamı iptal et
                         } else {
                             if let prev = previousPoint {
                                 path.move(to: prev)

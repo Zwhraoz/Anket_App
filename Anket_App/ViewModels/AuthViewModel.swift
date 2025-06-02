@@ -12,8 +12,12 @@ class AuthViewModel: ObservableObject {
     }
 
     init() {
-        // Uygulama ilk açıldığında giriş yapıldı mı kontrol et
         self.isLoggedIn = UserDefaults.standard.bool(forKey: "isLoggedIn")
+        if let userId = UserDefaults.standard.object(forKey: "userId") {
+            print("Init - Found userId in UserDefaults:", userId, "Type:", type(of: userId))
+        } else {
+            print("Init - No userId found in UserDefaults")
+        }
     }
 
     func register() {
@@ -28,19 +32,39 @@ class AuthViewModel: ObservableObject {
     }
 
     func login() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if self.username == "testuser" && self.password == "123456" {
-                self.message = ""
-                self.isLoggedIn = true
-            } else {
-                self.message = "Kullanıcı adı veya şifre yanlış."
-                self.isLoggedIn = false
+        print("Login attempt with username:", username)
+        let user = User(mail: username, password: password)
+        AuthService.shared.login(user: user) { success, message, userId in
+            DispatchQueue.main.async {
+                self.message = message
+                self.isLoggedIn = success
+                
+                if success {
+                    print("Login başarılı")
+                    if let id = userId {
+                        print("Received userId from server:", id, "Type:", type(of: id))
+                        UserDefaults.standard.set(id, forKey: "userId")
+                        
+                        if let savedId = UserDefaults.standard.object(forKey: "userId") {
+                            print("Successfully saved userId:", savedId, "Type:", type(of: savedId))
+                        } else {
+                            print("Failed to save userId to UserDefaults")
+                        }
+                    } else {
+                        print("login sonucu gelen userId nil")
+                    }
+                } else {
+                    print("Login başarısız: \(message)")
+                }
+                
+                print("Current UserDefaults contents:", UserDefaults.standard.dictionaryRepresentation())
             }
         }
     }
 
     func logout() {
         isLoggedIn = false
+        UserDefaults.standard.removeObject(forKey: "userId")
         clearFields()
     }
 

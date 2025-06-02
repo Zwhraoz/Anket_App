@@ -11,6 +11,8 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var navigateToRegister = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         NavigationStack {
@@ -43,8 +45,9 @@ struct LoginView: View {
                                 .foregroundColor(.gray)
                             TextField("Email", text: $email)
                                 .autocapitalization(.none)
+                                .keyboardType(.emailAddress)
+                                .textInputAutocapitalization(.never)
                                 .foregroundColor(.black)
-
                         }
                         .padding()
                         .background(Color.white)
@@ -56,7 +59,6 @@ struct LoginView: View {
                                 .foregroundColor(.gray)
                             SecureField("Şifre", text: $password)
                                 .foregroundColor(.black)
-
                         }
                         .padding()
                         .background(Color.white)
@@ -66,9 +68,14 @@ struct LoginView: View {
                     .padding(.horizontal)
 
                     Button(action: {
-                        // Basit demo amaçlı giriş kontrolü
+                        // Use proper login function
                         if !email.isEmpty && !password.isEmpty {
-                            authVM.isLoggedIn = true
+                            authVM.username = email  // Set the credentials
+                            authVM.password = password
+                            authVM.login()  // Call the actual login function
+                        } else {
+                            alertMessage = "Email ve şifre boş olamaz"
+                            showAlert = true
                         }
                     }) {
                         Text("Giriş Yap")
@@ -80,6 +87,15 @@ struct LoginView: View {
                             .shadow(radius: 5)
                     }
                     .padding(.horizontal)
+                    .alert(isPresented: $showAlert) {
+                        Alert(title: Text("Hata"), message: Text(alertMessage), dismissButton: .default(Text("Tamam")))
+                    }
+
+                    if !authVM.message.isEmpty {
+                        Text(authVM.message)
+                            .foregroundColor(.white)
+                            .padding()
+                    }
 
                     HStack {
                         Spacer()

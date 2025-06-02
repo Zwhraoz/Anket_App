@@ -19,7 +19,7 @@ class SurveyViewModel: ObservableObject {
         errorMessage = nil
         successMessage = nil
 
-        guard let url = URL(string: "https://mobilprogramlama.ardglobal.com.tr/Anket_Uygulamasi/save_survey_response.php") else {
+        guard let url = URL(string: "https://mobilprogramlama.ardglobal.com.tr/Foto_ses_kaydi_imza_swift/save_survey_response.php") else {
             self.isLoading = false
             self.errorMessage = "URL geçersiz"
             return
