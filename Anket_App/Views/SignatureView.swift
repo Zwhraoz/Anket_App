@@ -9,6 +9,9 @@ import SwiftUI
 struct SignatureView: View {
     @Binding var points: [CGPoint]
     
+
+    
+   
     var body: some View {
         GeometryReader { geometry in
             ZStack {

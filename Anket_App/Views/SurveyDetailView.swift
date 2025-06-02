@@ -11,6 +11,61 @@ struct SurveyDetailView: View {
 @StateObject var viewModel: SurveyDetailViewModel
     @State private var signaturePoints: [CGPoint] = []
 
+    func renderSignature(from points: [CGPoint], size: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { context in
+            context.cgContext.setStrokeColor(UIColor.black.cgColor)
+            context.cgContext.setLineWidth(2)
+            
+            var previousPoint: CGPoint? = nil
+            for point in points {
+                if point == .zero {
+                    previousPoint = nil
+                } else {
+                    if let prev = previousPoint {
+                        context.cgContext.move(to: prev)
+                        context.cgContext.addLine(to: point)
+                    }
+                    previousPoint = point
+                }
+            }
+            context.cgContext.strokePath()
+        }
+    }
+    
+    func uploadSignature(image: UIImage) {
+        guard let imageData = image.pngData() else { return }
+        let base64 = imageData.base64EncodedString()
+        let fileName = UUID().uuidString
+        let userId = UserDefaults.standard.integer(forKey: "userId")
+
+        let json: [String: Any] = [
+            "signatureBase64": base64,
+            "fileName": fileName,
+            "userId": userId
+        ]
+
+        guard let url = URL(string: "https://mobilprogramlama.ardglobal.com.tr/Foto_ses_kaydi_imza_swift/upload_signature.php") else { return }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: json)
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("İmza gönderme hatası: \(error.localizedDescription)")
+                return
+            }
+            if let data = data,
+               let result = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let message = result["message"] as? String {
+                print("✅ \(message)")
+            } else {
+                print("Sunucu cevabı okunamadı.")
+            }
+        }.resume()
+    }
 
 var body: some View {
     ScrollView {
@@ -41,7 +96,7 @@ var body: some View {
                         
                     case .audio:
                         AudioAnswerView(question: question)
-                                  .environmentObject(viewModel)
+                            .environmentObject(viewModel)
                     }
                 }
                 .padding(.vertical)
@@ -62,29 +117,29 @@ var body: some View {
             }
             .padding(.top)
             
+            
             Button(action: {
-                viewModel.submitSurvey()
-                print("submitSurvey tetiklendi")
-
-            }) {
-                Text("Anketi Gönder")
-                    .bold()
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-            .padding(.top)
-        }
-        .padding()
-    }
-    .navigationTitle("Anket Detayı")
-    .navigationBarTitleDisplayMode(.inline)
-}
-
-
-}
+                              let image = renderSignature(from: signaturePoints, size: CGSize(width: 300, height: 200))
+                              uploadSignature(image: image)
+                              viewModel.submitSurvey()
+                              print("submitSurvey tetiklendi")
+                          }) {
+                              Text("Anketi Gönder")
+                                  .bold()
+                                  .frame(maxWidth: .infinity)
+                                  .padding()
+                                  .background(Color.blue)
+                                  .foregroundColor(.white)
+                                  .cornerRadius(8)
+                          }
+                          .padding(.top)
+                      }
+                      .padding()
+                  }
+                  .navigationTitle("Anket Detayı")
+                  .navigationBarTitleDisplayMode(.inline)
+              }
+          }
 
 struct MultipleChoiceView: View {
 var question: Question
